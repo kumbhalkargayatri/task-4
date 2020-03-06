@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css"/>
+
+    
+    <title>Student registration form</title>
+
+    <style>
+    
+    #ListDiv {
+  display: none;
+    }
+    table {
+  border-collapse: collapse;
+  width: 60%;
+}
+td {border: 1px #DDD solid; padding: 5px; cursor: pointer;}
+
+.selected {
+    background-color: brown;
+    color: #FFF;
+}
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+    table {
+  border-collapse: collapse;
+}
+
+table, td, th {
+  border: 1px solid black;
+  
+}
+
+    </style>
+</head>
+<body>
+
+  
+
+    <h1>Students Info</h1>
+    <button type="button" id="popbtn" onclick="StudentList()"class="btn btn-success">list students</button>
+    <div id="ListDiv">
+        <h1>List of Students</h1>
+        <table id="table">
+            <tr>
+              <th>sid</th>
+                <th>Name</th>
+                <th>Marks</th>
+            </tr>
+            
+          <!--  <tbody id="tBody"></tbody>-->
+            </table>
+    </div>
+
+    <!--<div id="message" ></div>-->
+         
+<script>
+
+ 
+ 
+
+function StudentList()
+{
+    document.getElementById("ListDiv").style.display = "block";
+    $.ajax({
+         url : ' https://morning-shelf-84536.herokuapp.com/student/gstudents',
+         type : 'GET',
+         data :JSON.stringify(),
+        contentType: 'application/json',
+        dataType : 'json',
+        success : function(response)
+        {            
+  $(response.students).each(function(index,value){
+            var record="<tr><td>"+value.sid+"</td><td onclick='javascript:edit();'>"
+            
+                   + value.name+"</td><td>"+value.marks+"</td></tr>";
+                    $("table").append(record);       
+          })
+  
+                console.log(response);
+            $("#name").click(function()
+            {
+              $("#record").load(this.href);
+
+              return false;
+            });
+            
+              },
+
+        error: function()
+        {
+            console.log('data not displayed');
+        }
+          
+    })
+
+};
+
+//function edit()
+//	{
+//		var message = $('#message');
+//        var tr = $('#table').find('tr');
+//        tr.bind('click', function(event) {
+//          $(this).addClass('selected').siblings().removeClass('selected'); 
+//            var values = '';
+//            tr.removeClass('row-highlight');
+//           var tds = $(this).addClass('row-highlight').find('td');
+//   $.each(tds, function(index, item) {
+//                //values = values + 'td' + (index + 1) + ':' + item.innerHTML + '&nbsp';
+//                values =values + 'td' + ':' + item.innerHTML + '&nbsp';
+//         });
+//             message.html(values);
+ //    });
+//	} 
+
+
+function edit()
+{
+  $("#table tr").click(function ()
+  {
+    var tData=$(this).children("td").map(function()
+    {
+      return $(this).text();
+    }).get();
+    var td=tData[0];
+    var td1=tData[1];
+    var td2=tData[2];
+    console.log('sid:',td);
+   // console.log('Name:',td1);
+    //console.log('Marks:',td2);
+    
+   
+    window.location.href='./edit_student.html?sid='+td;
+    //window.location.replace='https://morning-shelf-84536.herokuapp.com/student/gstudent/'+ td;
+    //window.location.href='https://morning-shelf-84536.herokuapp.com/student/gstudent/'+ td;
+    
+
+    //window.location.href = "./edit_student" +url;
+     
+    
+
+
+
+    //var url = "./gedit.html?sid=" + td + "&name=" + td1 + "&marks=" + td2;
+     //           window.location.href = url;
+    
+    
+    //$('#sid').val(td); 
+    //$('#name').val(td1); 
+    //$('#marks').val(td2); 
+  });
+}
+
+
+
+
+
+</script>
+
+</body>
+</html>

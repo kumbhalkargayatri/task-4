@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    	<meta charset="utf-8"/>
+    	<title>Edit_Data </title>
+    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css"/>
+
+		<style>
+		 table {
+  border-collapse: collapse;
+  width: 60%;
+}
+table, td, th {
+  border: 1px solid black;
+  
+}
+		</style>
+	</head>
+    <body>
+    	
+		<div id="myDIV">
+		<h1>Student Register</h1>
+		<form id="formDiv">
+			<table id="table">
+			<tr>
+			<th>Sid</th>
+			<td><input type="number" id="sid" name="sid" /></td>
+			</tr>
+			<tr>
+			<th> full Name</th>
+			<td><input type="text" id="name" name="name" /></td>
+			</tr>
+			<tr>
+			<th>Marks</th>
+			<td><input type="number" id="marks" name="marks"/></td>
+			</tr>
+			<tr>
+			<td colspan="5" align="center">
+				<input type="button" id="btn" value="Edit"class="btn btn-success"/>
+				<input type="reset"  value="Reset Data"/>
+			</td>
+			</tr>
+		   
+			</table><br>
+		  </form>
+	</div>
+
+	Result : <div id="result" style="border:thin dotted black; height:50px; width:600px"></div>
+
+	 
+<script> 
+
+        var queryString = new Array();
+        $(function () {
+            if (queryString.length == 0) {
+                if (window.location.search.split('?').length > 1) {
+                    var params = window.location.search.split('?')[1].split('&');
+                    for (var i = 0; i < params.length; i++) {
+                        var key = params[i].split('=')[0];
+                        var value = decodeURIComponent(params[i].split('=')[1]);
+                        queryString[key] = value;
+                    }
+                }
+            }
+		
+
+			if (queryString['sid'] != null) 
+			{
+				//var data;
+                //data = "<b>sid:</b> " + queryString["sid"] + " <b>name:</b> " + queryString["name"] + " <b>marks:</b> " + queryString["marks"];
+               var data1 = queryString["sid"] ; 
+             
+			    //$('#textBox').html(data);
+			  
+			   $('#sid').val(data1);
+			 //console.log(data1);
+			
+			
+			
+			 
+					$.ajax({
+                         url:'https://morning-shelf-84536.herokuapp.com/student/gstudent/'+ data1,
+        				  type : 'GET',
+        				 data :JSON.stringify( { "sid":sid,"name": name, "marks": marks } ),
+        				 contentType: 'application/json',
+        				 dataType : 'json',
+        				 success : function(data){
+                     	var obj=JSON.stringify(data);
+						console.log(obj);
+						//$('#result').html((obj));
+
+  					 $.each(data, function( index, value ) {
+					//	console.log(index);
+						//console.log(value);
+						
+						var sid_sid=value.sid;
+						//console.log(sid_sid);
+					      $('#sid').html((sid_sid)); 
+  			         
+					    var sid_name=value.name;
+						 // console.log(sid_name);
+						  $('#name').val((sid_name));
+						    
+						var sid_marks=value.marks;
+						 // console.log(sid_marks);
+						  $('#marks').val((sid_marks));
+							
+							});
+        				 
+						 
+
+						 },        	
+        				 error: function (errorThrown) {
+        	                    console.log(errorThrown);
+        	             }
+        			 })
+					
+					
+        	 	$("#btn").click(function(){
+                var _sid = $("#sid").val()
+				var sid = parseInt(_sid)
+
+				var name = $("#name").val()
+        	 	
+				 var _marks = $("#marks").val()
+				var marks = parseInt(_marks)
+				
+				 const data = {};
+					data.id = sid;
+					data.name = name;
+					data.marks = marks;
+
+				 const stud_data = JSON.stringify(data);
+        	 		$.ajax({
+                         url:'https://morning-shelf-84536.herokuapp.com/student/gedit',
+        				 type : 'POST',
+        				 data :stud_data,
+        				 contentType: 'application/json',
+        				 dataType : 'json',
+        				 success : function(data){
+                          	 $('#result').html(JSON.stringify(data));
+        					 	//alert(data);
+								 console.log(data);
+        				 },        				
+        				 error: function (errorThrown) {
+        	                    console.log(errorThrown);
+        	             }
+        			 })
+        		})
+        	
+
+
+
+			}
+		});
+</script>
+
+
+
+
+
+
+</body>
+</html>
